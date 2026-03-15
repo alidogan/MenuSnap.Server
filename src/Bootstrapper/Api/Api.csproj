@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..\..</DockerfileContext>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Keycloak.AuthServices.Authentication" Version="2.8.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
+    <PackageReference Include="Serilog.Sinks.Seq" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Modules\Menu\Menu\Menu.csproj" />
+    <ProjectReference Include="..\..\Modules\Order\Order\Order.csproj" />
+    <ProjectReference Include="..\..\Modules\Tenant\Tenant\Tenant.csproj" />
+    <ProjectReference Include="..\..\Modules\Identity\Identity\Identity.csproj" />
+    <ProjectReference Include="..\..\Shared\Shared\Shared.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,107 @@
+## ── .NET ──────────────────────────────────────────────────────────────────────
+
+# Build output
+bin/
+obj/
+out/
+publish/
+
+# NuGet
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+!**/packages/repositories.config
+nuget.config
+
+# Project-specific
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Dotnet tools
+.config/dotnet-tools.json
+
+# Test results
+TestResults/
+coverage/
+*.trx
+*.coveragexml
+*.coverage
+
+## ── ASP.NET ───────────────────────────────────────────────────────────────────
+
+# Published web app
+wwwroot/dist/
+
+## ── Entity Framework ──────────────────────────────────────────────────────────
+
+# EF Core scaffolded migrations temp files
+*.ef.json
+
+## ── Visual Studio ─────────────────────────────────────────────────────────────
+
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.userprefs
+*.pidb
+*.booproj
+
+# Visual Studio cache/options
+.vs/
+# Uncomment if you have tasks you want to share
+# .vscode/tasks.json
+
+## ── Rider / JetBrains ─────────────────────────────────────────────────────────
+
+.idea/
+*.sln.iml
+
+## ── VS Code ───────────────────────────────────────────────────────────────────
+
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+## ── OS ────────────────────────────────────────────────────────────────────────
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+
+## ── Docker ────────────────────────────────────────────────────────────────────
+
+# Local override is tracked; secrets override is not
+docker-compose.secrets.yml
+
+## ── Secrets & environment ─────────────────────────────────────────────────────
+
+.env
+.env.*
+!.env.example
+secrets.json
+appsettings.Secrets.json
+appsettings.Local.json
+
+## ── Logs ──────────────────────────────────────────────────────────────────────
+
+*.log
+logs/
