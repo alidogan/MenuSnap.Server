@@ -61,3 +61,5 @@ app
     .UseIdentityModule();
 
 app.Run();
+
+public partial class Program { }
