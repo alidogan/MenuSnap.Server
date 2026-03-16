@@ -19,8 +19,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Modules\Menu\Menu\Menu.csproj" />
+    <ProjectReference Include="..\..\Modules\Catalog\Catalog\Catalog.csproj" />
+    <ProjectReference Include="..\..\Modules\Location\Location\Location.csproj" />
     <ProjectReference Include="..\..\Modules\Order\Order\Order.csproj" />
+    <ProjectReference Include="..\..\Modules\Storage\Storage\Storage.csproj" />
     <ProjectReference Include="..\..\Modules\Tenant\Tenant\Tenant.csproj" />
     <ProjectReference Include="..\..\Modules\Identity\Identity\Identity.csproj" />
     <ProjectReference Include="..\..\Shared\Shared\Shared.csproj" />

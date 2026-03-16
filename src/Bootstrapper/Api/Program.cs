@@ -1,13 +1,15 @@
 using Carter;
+using Catalog;
 using Identity;
 using Keycloak.AuthServices.Authentication;
-using Menu;
+using Location;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Order;
 using Serilog;
 using Shared.Exceptions.Handler;
 using Shared.Extensions;
 using Shared.Messaging.Extensions;
+using Storage;
 using Tenant;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,16 +17,17 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((context, config) =>
     config.ReadFrom.Configuration(context.Configuration));
 
-var menuAssembly = typeof(MenuModule).Assembly;
+var catalogAssembly = typeof(CatalogModule).Assembly;
+var locationAssembly = typeof(LocationModule).Assembly;
 var orderAssembly = typeof(OrderModule).Assembly;
 var tenantAssembly = typeof(TenantModule).Assembly;
 var identityAssembly = typeof(IdentityModule).Assembly;
 
 builder.Services
-    .AddCarterWithAssemblies(menuAssembly, orderAssembly, tenantAssembly, identityAssembly);
+    .AddCarterWithAssemblies(catalogAssembly, locationAssembly, orderAssembly, tenantAssembly, identityAssembly);
 
 builder.Services
-    .AddMediatRWithAssemblies(menuAssembly, orderAssembly, tenantAssembly, identityAssembly);
+    .AddMediatRWithAssemblies(catalogAssembly, locationAssembly, orderAssembly, tenantAssembly, identityAssembly);
 
 builder.Services.AddStackExchangeRedisCache(options =>
 {
@@ -32,13 +35,15 @@ builder.Services.AddStackExchangeRedisCache(options =>
 });
 
 builder.Services
-    .AddMassTransitWithAssemblies(builder.Configuration, menuAssembly, orderAssembly, tenantAssembly, identityAssembly);
+    .AddMassTransitWithAssemblies(builder.Configuration, catalogAssembly, locationAssembly, orderAssembly, tenantAssembly, identityAssembly);
 
 builder.Services.AddKeycloakWebApiAuthentication(builder.Configuration);
 builder.Services.AddAuthorization();
 
 builder.Services
-    .AddMenuModule(builder.Configuration)
+    .AddStorageModule(builder.Configuration)
+    .AddCatalogModule(builder.Configuration)
+    .AddLocationModule(builder.Configuration)
     .AddOrderModule(builder.Configuration)
     .AddTenantModule(builder.Configuration)
     .AddIdentityModule(builder.Configuration);
@@ -55,7 +60,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app
-    .UseMenuModule()
+    .UseCatalogModule()
+    .UseLocationModule()
     .UseOrderModule()
     .UseTenantModule()
     .UseIdentityModule();

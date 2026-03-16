@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Shared\Shared\Shared.csproj" />
+    <ProjectReference Include="..\..\..\Shared\Shared.Contracts\Shared.Contracts.csproj" />
+    <ProjectReference Include="..\..\..\Shared\Shared.Messaging\Shared.Messaging.csproj" />
+    <ProjectReference Include="..\..\..\Modules\Storage\Storage.Contracts\Storage.Contracts.csproj" />
+    <ProjectReference Include="..\Location.Contracts\Location.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>

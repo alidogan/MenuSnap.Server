@@ -1,0 +1,16 @@
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore.Metadata.Builders;
+global using System.Reflection;
+global using Shared.DDD;
+global using Shared.Data;
+global using Shared.Data.Seed;
+global using Shared.Contracts.CQRS;
+global using MediatR;
+global using Microsoft.Extensions.Logging;
+global using Carter;
+global using Microsoft.AspNetCore.Builder;
+global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.Routing;
+global using FluentValidation;
+global using Location.Data;
+global using Location.Contracts.Locations.Dtos;
