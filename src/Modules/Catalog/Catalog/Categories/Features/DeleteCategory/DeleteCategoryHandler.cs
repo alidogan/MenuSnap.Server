@@ -12,12 +12,12 @@ internal class DeleteCategoryHandler(CatalogDbContext dbContext)
         DeleteCategoryCommand command, CancellationToken cancellationToken)
     {
         var category = await dbContext.CatalogCategories
-            .FindAsync([command.Id], cancellationToken: cancellationToken);
+            .FirstOrDefaultAsync(c => c.Id == command.Id, cancellationToken);
 
         if (category is null)
             throw new CatalogCategoryNotFoundException(command.Id);
 
-        dbContext.CatalogCategories.Remove(category);
+        category.Delete();
         await dbContext.SaveChangesAsync(cancellationToken);
         return new DeleteCategoryResult(true);
     }

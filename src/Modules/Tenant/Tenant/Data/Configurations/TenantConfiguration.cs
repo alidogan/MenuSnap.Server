@@ -11,5 +11,7 @@ public class TenantConfiguration : IEntityTypeConfiguration<Tenants.Models.Tenan
         builder.Property(t => t.IsActive).IsRequired();
 
         builder.HasIndex(t => t.Slug).IsUnique();
+
+        builder.HasQueryFilter(t => !t.IsDeleted);
     }
 }

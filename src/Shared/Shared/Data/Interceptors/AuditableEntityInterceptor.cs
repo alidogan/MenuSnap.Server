@@ -41,6 +41,14 @@ public class AuditableEntityInterceptor : SaveChangesInterceptor
                 entry.Entity.LastModifiedBy = "system";
                 entry.Entity.LastModified = DateTime.UtcNow;
             }
+
+            if (entry.State == EntityState.Modified
+                && entry.Entity.IsDeleted
+                && entry.OriginalValues.GetValue<bool>(nameof(IEntity.IsDeleted)) == false)
+            {
+                entry.Entity.DeletedAt = DateTime.UtcNow;
+                entry.Entity.DeletedBy = "system";
+            }
         }
     }
 }

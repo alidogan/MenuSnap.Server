@@ -13,12 +13,12 @@ internal class DeleteTenantHandler(TenantDbContext dbContext)
         DeleteTenantCommand command, CancellationToken cancellationToken)
     {
         var tenant = await dbContext.Tenants
-            .FindAsync([command.Id], cancellationToken: cancellationToken);
+            .FirstOrDefaultAsync(t => t.Id == command.Id, cancellationToken);
 
         if (tenant is null)
             throw new TenantNotFoundException(command.Id);
 
-        dbContext.Tenants.Remove(tenant);
+        tenant.Delete();
         await dbContext.SaveChangesAsync(cancellationToken);
 
         return new DeleteTenantResult(true);

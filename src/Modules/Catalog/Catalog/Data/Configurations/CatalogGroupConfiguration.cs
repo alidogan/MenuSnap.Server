@@ -14,5 +14,7 @@ public class CatalogGroupConfiguration : IEntityTypeConfiguration<CatalogGroup>
         builder.HasIndex(g => g.LocationId);
         builder.HasIndex(g => g.TenantId);
         builder.HasIndex(g => new { g.LocationId, g.DisplayOrder });
+
+        builder.HasQueryFilter(g => !g.IsDeleted);
     }
 }

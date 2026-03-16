@@ -16,5 +16,7 @@ public class ItemModifierGroupConfiguration : IEntityTypeConfiguration<ItemModif
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasIndex(g => g.ItemId);
+
+        builder.HasQueryFilter(g => !g.IsDeleted);
     }
 }

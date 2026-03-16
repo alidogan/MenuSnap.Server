@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Order;
 using Serilog;
+using ServiceUnit;
 using Shared.Exceptions.Handler;
 using Shared.Extensions;
 using Shared.Messaging.Extensions;
@@ -23,12 +24,13 @@ var locationAssembly = typeof(LocationModule).Assembly;
 var orderAssembly = typeof(OrderModule).Assembly;
 var tenantAssembly = typeof(TenantModule).Assembly;
 var identityAssembly = typeof(IdentityModule).Assembly;
+var serviceUnitAssembly = typeof(ServiceUnitModule).Assembly;
 
 builder.Services
-    .AddCarterWithAssemblies(catalogAssembly, locationAssembly, orderAssembly, tenantAssembly, identityAssembly);
+    .AddCarterWithAssemblies(catalogAssembly, locationAssembly, orderAssembly, tenantAssembly, identityAssembly, serviceUnitAssembly);
 
 builder.Services
-    .AddMediatRWithAssemblies(catalogAssembly, locationAssembly, orderAssembly, tenantAssembly, identityAssembly);
+    .AddMediatRWithAssemblies(catalogAssembly, locationAssembly, orderAssembly, tenantAssembly, identityAssembly, serviceUnitAssembly);
 
 builder.Services.AddStackExchangeRedisCache(options =>
 {
@@ -36,7 +38,7 @@ builder.Services.AddStackExchangeRedisCache(options =>
 });
 
 builder.Services
-    .AddMassTransitWithAssemblies(builder.Configuration, catalogAssembly, locationAssembly, orderAssembly, tenantAssembly, identityAssembly);
+    .AddMassTransitWithAssemblies(builder.Configuration, catalogAssembly, locationAssembly, orderAssembly, tenantAssembly, identityAssembly, serviceUnitAssembly);
 
 builder.Services.AddKeycloakWebApiAuthentication(builder.Configuration);
 
@@ -64,7 +66,8 @@ builder.Services
     .AddLocationModule(builder.Configuration)
     .AddOrderModule(builder.Configuration)
     .AddTenantModule(builder.Configuration)
-    .AddIdentityModule(builder.Configuration);
+    .AddIdentityModule(builder.Configuration)
+    .AddServiceUnitModule(builder.Configuration);
 
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 builder.Services.AddProblemDetails();
@@ -91,7 +94,8 @@ app
     .UseLocationModule()
     .UseOrderModule()
     .UseTenantModule()
-    .UseIdentityModule();
+    .UseIdentityModule()
+    .UseServiceUnitModule();
 
 app.Run();
 

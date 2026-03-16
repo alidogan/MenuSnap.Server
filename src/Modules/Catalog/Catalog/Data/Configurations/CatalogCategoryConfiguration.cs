@@ -17,5 +17,7 @@ public class CatalogCategoryConfiguration : IEntityTypeConfiguration<CatalogCate
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasIndex(c => c.GroupId);
+
+        builder.HasQueryFilter(c => !c.IsDeleted);
     }
 }

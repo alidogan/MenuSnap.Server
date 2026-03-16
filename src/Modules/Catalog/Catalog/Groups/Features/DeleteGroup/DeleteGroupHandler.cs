@@ -12,12 +12,12 @@ internal class DeleteGroupHandler(CatalogDbContext dbContext)
         DeleteGroupCommand command, CancellationToken cancellationToken)
     {
         var group = await dbContext.CatalogGroups
-            .FindAsync([command.Id], cancellationToken: cancellationToken);
+            .FirstOrDefaultAsync(g => g.Id == command.Id, cancellationToken);
 
         if (group is null)
             throw new CatalogGroupNotFoundException(command.Id);
 
-        dbContext.CatalogGroups.Remove(group);
+        group.Delete();
         await dbContext.SaveChangesAsync(cancellationToken);
         return new DeleteGroupResult(true);
     }

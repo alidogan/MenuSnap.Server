@@ -12,12 +12,12 @@ internal class DeleteModifierGroupHandler(CatalogDbContext dbContext)
         DeleteModifierGroupCommand command, CancellationToken cancellationToken)
     {
         var group = await dbContext.ItemModifierGroups
-            .FindAsync([command.Id], cancellationToken: cancellationToken);
+            .FirstOrDefaultAsync(g => g.Id == command.Id, cancellationToken);
 
         if (group is null)
             throw new ItemModifierGroupNotFoundException(command.Id);
 
-        dbContext.ItemModifierGroups.Remove(group);
+        group.Delete();
         await dbContext.SaveChangesAsync(cancellationToken);
         return new DeleteModifierGroupResult(true);
     }

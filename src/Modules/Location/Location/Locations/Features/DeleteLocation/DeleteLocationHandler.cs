@@ -13,12 +13,12 @@ internal class DeleteLocationHandler(LocationDbContext dbContext)
         DeleteLocationCommand command, CancellationToken cancellationToken)
     {
         var location = await dbContext.Locations
-            .FindAsync([command.Id], cancellationToken: cancellationToken);
+            .FirstOrDefaultAsync(l => l.Id == command.Id, cancellationToken);
 
         if (location is null)
             throw new LocationNotFoundException(command.Id);
 
-        dbContext.Locations.Remove(location);
+        location.Delete();
         await dbContext.SaveChangesAsync(cancellationToken);
         return new DeleteLocationResult(true);
     }

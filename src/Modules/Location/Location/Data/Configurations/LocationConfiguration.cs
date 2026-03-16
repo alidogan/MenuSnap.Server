@@ -17,5 +17,7 @@ public class LocationConfiguration : IEntityTypeConfiguration<Locations.Models.L
 
         builder.HasIndex(l => l.TenantId);
         builder.HasIndex(l => l.Slug).IsUnique();
+
+        builder.HasQueryFilter(l => !l.IsDeleted);
     }
 }

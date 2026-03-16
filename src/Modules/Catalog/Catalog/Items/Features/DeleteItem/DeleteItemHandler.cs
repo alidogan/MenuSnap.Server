@@ -12,12 +12,12 @@ internal class DeleteItemHandler(CatalogDbContext dbContext)
         DeleteItemCommand command, CancellationToken cancellationToken)
     {
         var item = await dbContext.CatalogItems
-            .FindAsync([command.Id], cancellationToken: cancellationToken);
+            .FirstOrDefaultAsync(i => i.Id == command.Id, cancellationToken);
 
         if (item is null)
             throw new CatalogItemNotFoundException(command.Id);
 
-        dbContext.CatalogItems.Remove(item);
+        item.Delete();
         await dbContext.SaveChangesAsync(cancellationToken);
         return new DeleteItemResult(true);
     }

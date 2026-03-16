@@ -12,12 +12,12 @@ internal class DeleteModifierHandler(CatalogDbContext dbContext)
         DeleteModifierCommand command, CancellationToken cancellationToken)
     {
         var modifier = await dbContext.ItemModifiers
-            .FindAsync([command.Id], cancellationToken: cancellationToken);
+            .FirstOrDefaultAsync(m => m.Id == command.Id, cancellationToken);
 
         if (modifier is null)
             throw new ItemModifierNotFoundException(command.Id);
 
-        dbContext.ItemModifiers.Remove(modifier);
+        modifier.Delete();
         await dbContext.SaveChangesAsync(cancellationToken);
         return new DeleteModifierResult(true);
     }

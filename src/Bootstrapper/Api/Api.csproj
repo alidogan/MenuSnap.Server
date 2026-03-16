@@ -25,6 +25,7 @@
     <ProjectReference Include="..\..\Modules\Storage\Storage\Storage.csproj" />
     <ProjectReference Include="..\..\Modules\Tenant\Tenant\Tenant.csproj" />
     <ProjectReference Include="..\..\Modules\Identity\Identity\Identity.csproj" />
+    <ProjectReference Include="..\..\Modules\ServiceUnit\ServiceUnit\ServiceUnit.csproj" />
     <ProjectReference Include="..\..\Shared\Shared\Shared.csproj" />
   </ItemGroup>
 
