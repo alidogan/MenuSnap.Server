@@ -3,6 +3,7 @@ using Catalog;
 using Identity;
 using Keycloak.AuthServices.Authentication;
 using Location;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Order;
 using Serilog;
@@ -38,6 +39,23 @@ builder.Services
     .AddMassTransitWithAssemblies(builder.Configuration, catalogAssembly, locationAssembly, orderAssembly, tenantAssembly, identityAssembly);
 
 builder.Services.AddKeycloakWebApiAuthentication(builder.Configuration);
+
+var keycloakFrontendUrl = builder.Configuration["Keycloak:frontend-url"];
+if (!string.IsNullOrEmpty(keycloakFrontendUrl))
+{
+    var realm = builder.Configuration["Keycloak:realm"];
+    var frontendIssuer = $"{keycloakFrontendUrl.TrimEnd('/')}/realms/{realm}";
+    builder.Services.PostConfigureAll<JwtBearerOptions>(options =>
+    {
+        var existing = (options.TokenValidationParameters.ValidIssuers ?? []).ToList();
+        if (!string.IsNullOrEmpty(options.TokenValidationParameters.ValidIssuer))
+            existing.Add(options.TokenValidationParameters.ValidIssuer);
+        existing.Add(frontendIssuer);
+        options.TokenValidationParameters.ValidIssuer = null;
+        options.TokenValidationParameters.ValidIssuers = existing.Distinct();
+    });
+}
+
 builder.Services.AddAuthorization();
 
 builder.Services
