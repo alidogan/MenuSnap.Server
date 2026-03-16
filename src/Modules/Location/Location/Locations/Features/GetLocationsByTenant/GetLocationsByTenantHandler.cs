@@ -6,6 +6,8 @@ public record GetLocationsByTenantQuery(Guid TenantId) : IQuery<GetLocationsByTe
 
 public record GetLocationsByTenantResult(IReadOnlyList<LocationDto> Locations);
 
+public record GetLocationsByTenantResponse(IReadOnlyList<LocationDto> Locations);
+
 internal class GetLocationsByTenantHandler(LocationDbContext dbContext)
     : IQueryHandler<GetLocationsByTenantQuery, GetLocationsByTenantResult>
 {
