@@ -38,7 +38,8 @@ internal sealed class MinioStorageService(
         await minio.PutObjectAsync(putArgs, ct);
 
         var protocol = _opts.UseSSL ? "https" : "http";
-        var url = $"{protocol}://{_opts.Endpoint}/{_opts.BucketName}/{objectName}";
+        var publicHost = string.IsNullOrWhiteSpace(_opts.PublicEndpoint) ? _opts.Endpoint : _opts.PublicEndpoint;
+        var url = $"{protocol}://{publicHost}/{_opts.BucketName}/{objectName}";
 
         logger.LogInformation("Uploaded object {ObjectName} to bucket {Bucket}", objectName, _opts.BucketName);
 
@@ -80,5 +81,30 @@ internal sealed class MinioStorageService(
             await minio.MakeBucketAsync(makeBucketArgs, ct);
             logger.LogInformation("Created MinIO bucket {Bucket}", _opts.BucketName);
         }
+
+        await SetPublicReadPolicyAsync(ct);
+    }
+
+    private async Task SetPublicReadPolicyAsync(CancellationToken ct)
+    {
+        var policy = $$"""
+            {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": { "AWS": ["*"] },
+                  "Action": ["s3:GetObject"],
+                  "Resource": ["arn:aws:s3:::{{_opts.BucketName}}/*"]
+                }
+              ]
+            }
+            """;
+
+        var setPolicyArgs = new SetPolicyArgs()
+            .WithBucket(_opts.BucketName)
+            .WithPolicy(policy);
+
+        await minio.SetPolicyAsync(setPolicyArgs, ct);
     }
 }
