@@ -8,10 +8,14 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
 COPY ["Bootstrapper/Api/Api.csproj", "Bootstrapper/Api/"]
-COPY ["Modules/Menu/Menu/Menu.csproj", "Modules/Menu/Menu/"]
-COPY ["Modules/Menu/Menu.Contracts/Menu.Contracts.csproj", "Modules/Menu/Menu.Contracts/"]
+COPY ["Modules/Catalog/Catalog/Catalog.csproj", "Modules/Catalog/Catalog/"]
+COPY ["Modules/Catalog/Catalog.Contracts/Catalog.Contracts.csproj", "Modules/Catalog/Catalog.Contracts/"]
+COPY ["Modules/Location/Location/Location.csproj", "Modules/Location/Location/"]
+COPY ["Modules/Location/Location.Contracts/Location.Contracts.csproj", "Modules/Location/Location.Contracts/"]
 COPY ["Modules/Order/Order/Order.csproj", "Modules/Order/Order/"]
 COPY ["Modules/Order/Order.Contracts/Order.Contracts.csproj", "Modules/Order/Order.Contracts/"]
+COPY ["Modules/Storage/Storage/Storage.csproj", "Modules/Storage/Storage/"]
+COPY ["Modules/Storage/Storage.Contracts/Storage.Contracts.csproj", "Modules/Storage/Storage.Contracts/"]
 COPY ["Modules/Tenant/Tenant/Tenant.csproj", "Modules/Tenant/Tenant/"]
 COPY ["Modules/Tenant/Tenant.Contracts/Tenant.Contracts.csproj", "Modules/Tenant/Tenant.Contracts/"]
 COPY ["Modules/Identity/Identity/Identity.csproj", "Modules/Identity/Identity/"]

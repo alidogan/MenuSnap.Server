@@ -14,8 +14,6 @@ services:
   distributedcache:
     image: redis:7-alpine
     restart: unless-stopped
-    ports:
-      - "6379:6379"
 
   messagebus:
     image: rabbitmq:4-management-alpine
