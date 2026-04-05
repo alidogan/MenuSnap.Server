@@ -22,14 +22,9 @@ public static class MassTransitExtensions
             config.AddSagas(assemblies);
             config.AddActivities(assemblies);
 
-            config.UsingRabbitMq((context, configurator) =>
+            config.UsingInMemory((context, cfg) =>
             {
-                configurator.Host(new Uri(configuration["MessageBroker:Host"]!), host =>
-                {
-                    host.Username(configuration["MessageBroker:UserName"]!);
-                    host.Password(configuration["MessageBroker:Password"]!);
-                });
-                configurator.ConfigureEndpoints(context);
+                cfg.ConfigureEndpoints(context);
             });
         });
 

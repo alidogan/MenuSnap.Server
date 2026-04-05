@@ -15,13 +15,6 @@ services:
     image: redis:7-alpine
     restart: unless-stopped
 
-  messagebus:
-    image: rabbitmq:4-management-alpine
-    restart: unless-stopped
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-
   seq:
     image: datalust/seq:latest
     environment:
@@ -57,7 +50,6 @@ services:
     depends_on:
       - menudb
       - distributedcache
-      - messagebus
       - minio
     restart: unless-stopped
     ports:
