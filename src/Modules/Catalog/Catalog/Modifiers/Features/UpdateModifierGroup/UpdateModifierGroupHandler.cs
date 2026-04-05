@@ -6,7 +6,8 @@ public record UpdateModifierGroupCommand(
     Guid Id, string Name,
     bool IsRequired, bool IsMultiSelect,
     int? MinSelections, int? MaxSelections,
-    int DisplayOrder, bool IsActive)
+    int DisplayOrder, bool IsActive,
+    Dictionary<string, LocalizedContent>? Translations = null)
     : ICommand<UpdateModifierGroupResult>;
 
 public record UpdateModifierGroupResult(bool IsSuccess);
@@ -35,7 +36,8 @@ internal class UpdateModifierGroupHandler(CatalogDbContext dbContext)
             throw new ItemModifierGroupNotFoundException(command.Id);
 
         group.Update(command.Name, command.IsRequired, command.IsMultiSelect,
-            command.MinSelections, command.MaxSelections, command.DisplayOrder, command.IsActive);
+            command.MinSelections, command.MaxSelections, command.DisplayOrder, command.IsActive,
+            command.Translations);
 
         await dbContext.SaveChangesAsync(cancellationToken);
         return new UpdateModifierGroupResult(true);

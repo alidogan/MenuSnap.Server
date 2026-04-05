@@ -13,7 +13,8 @@ public static class CreateCategoryMapper
             command.Name,
             command.Description,
             command.DisplayOrder,
-            command.IsActive);
+            command.IsActive,
+            command.Translations);
 
     public static CreateCategoryResult ToResult(CatalogCategory category) => new(category.Id);
 

@@ -1,6 +1,7 @@
 namespace Catalog.Modifiers.Features.UpdateModifier;
 
-public record UpdateModifierRequest(string Name, decimal PriceDelta, bool IsDefault, bool IsAvailable, int DisplayOrder);
+public record UpdateModifierRequest(string Name, decimal PriceDelta, bool IsDefault, bool IsAvailable, int DisplayOrder,
+    Dictionary<string, LocalizedContent>? Translations = null);
 
 public class UpdateModifierEndpoint : ICarterModule
 {
@@ -11,7 +12,8 @@ public class UpdateModifierEndpoint : ICarterModule
             {
                 await sender.Send(new UpdateModifierCommand(
                     id, request.Name, request.PriceDelta,
-                    request.IsDefault, request.IsAvailable, request.DisplayOrder));
+                    request.IsDefault, request.IsAvailable, request.DisplayOrder,
+                    request.Translations));
                 return Results.NoContent();
             })
             .RequireAuthorization()

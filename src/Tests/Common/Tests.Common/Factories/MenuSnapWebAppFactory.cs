@@ -27,6 +27,10 @@ public class MenuSnapWebAppFactory : WebApplicationFactory<Program>, IAsyncLifet
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseSetting("ConnectionStrings:Database", _dbContainer.GetConnectionString());
+        builder.UseSetting("Jwt:Secret", "TestSecretKeyThatIsAtLeast32CharactersLong!");
+        builder.UseSetting("Jwt:Issuer", "menusnap-api-test");
+        builder.UseSetting("Jwt:Audience", "menusnap-portal-test");
+        builder.UseSetting("Jwt:ExpiryMinutes", "60");
 
         builder.ConfigureServices(services =>
         {

@@ -4,7 +4,8 @@ namespace Catalog.Modifiers.Features.UpdateModifier;
 
 public record UpdateModifierCommand(
     Guid Id, string Name, decimal PriceDelta,
-    bool IsDefault, bool IsAvailable, int DisplayOrder)
+    bool IsDefault, bool IsAvailable, int DisplayOrder,
+    Dictionary<string, LocalizedContent>? Translations = null)
     : ICommand<UpdateModifierResult>;
 
 public record UpdateModifierResult(bool IsSuccess);
@@ -30,7 +31,8 @@ internal class UpdateModifierHandler(CatalogDbContext dbContext)
         if (modifier is null)
             throw new ItemModifierNotFoundException(command.Id);
 
-        modifier.Update(command.Name, command.PriceDelta, command.IsDefault, command.IsAvailable, command.DisplayOrder);
+        modifier.Update(command.Name, command.PriceDelta, command.IsDefault, command.IsAvailable, command.DisplayOrder,
+            command.Translations);
         await dbContext.SaveChangesAsync(cancellationToken);
         return new UpdateModifierResult(true);
     }

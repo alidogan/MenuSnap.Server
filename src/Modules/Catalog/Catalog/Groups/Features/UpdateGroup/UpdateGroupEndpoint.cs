@@ -1,6 +1,7 @@
 namespace Catalog.Groups.Features.UpdateGroup;
 
-public record UpdateGroupRequest(string Name, string? Description, string Type, int DisplayOrder, bool IsActive);
+public record UpdateGroupRequest(string Name, string? Description, string Type, int DisplayOrder, bool IsActive,
+    Dictionary<string, LocalizedContent>? Translations = null);
 
 public class UpdateGroupEndpoint : ICarterModule
 {
@@ -9,7 +10,8 @@ public class UpdateGroupEndpoint : ICarterModule
         app.MapPut("/catalog/groups/{id:guid}", async (Guid id, UpdateGroupRequest request, ISender sender) =>
         {
             await sender.Send(new UpdateGroupCommand(
-                id, request.Name, request.Description, request.Type, request.DisplayOrder, request.IsActive));
+                id, request.Name, request.Description, request.Type, request.DisplayOrder, request.IsActive,
+                request.Translations));
             return Results.NoContent();
         })
         .RequireAuthorization()

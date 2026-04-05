@@ -1,3 +1,5 @@
+using Catalog.Shared;
+
 namespace Catalog.Modifiers.Dtos;
 
 public record ItemModifierGroupDto(
@@ -10,6 +12,7 @@ public record ItemModifierGroupDto(
     int? MaxSelections,
     int DisplayOrder,
     bool IsActive,
+    Dictionary<string, LocalizedContent> Translations,
     IReadOnlyList<ItemModifierDto> Modifiers);
 
 public record ItemModifierDto(
@@ -18,4 +21,5 @@ public record ItemModifierDto(
     decimal PriceDelta,
     bool IsDefault,
     bool IsAvailable,
-    int DisplayOrder);
+    int DisplayOrder,
+    Dictionary<string, LocalizedContent> Translations);

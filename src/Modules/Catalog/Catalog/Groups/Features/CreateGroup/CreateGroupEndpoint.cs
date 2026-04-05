@@ -7,7 +7,8 @@ public record CreateGroupRequest(
     string? Description,
     string Type,
     int DisplayOrder,
-    bool IsActive = true);
+    bool IsActive = true,
+    Dictionary<string, LocalizedContent>? Translations = null);
 
 public record CreateGroupResponse(Guid Id);
 
@@ -19,7 +20,8 @@ public class CreateGroupEndpoint : ICarterModule
         {
             var command = new CreateGroupCommand(
                 request.TenantId, request.LocationId, request.Name,
-                request.Description, request.Type, request.DisplayOrder, request.IsActive);
+                request.Description, request.Type, request.DisplayOrder, request.IsActive,
+                request.Translations);
 
             var result = await sender.Send(command);
             return Results.Created($"/catalog/groups/{result.Id}", new CreateGroupResponse(result.Id));

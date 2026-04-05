@@ -3,7 +3,8 @@ namespace Catalog.Items.Features.UpdateItem;
 public record UpdateItemRequest(
     string Name, string? Description, decimal Price,
     int? Calories, int? PrepTimeMinutes, bool IsAvailable,
-    int DisplayOrder, List<string>? Allergens, List<string>? Badges);
+    int DisplayOrder, List<string>? Allergens, List<string>? Badges,
+    Dictionary<string, LocalizedContent>? Translations = null);
 
 public class UpdateItemEndpoint : ICarterModule
 {
@@ -14,7 +15,7 @@ public class UpdateItemEndpoint : ICarterModule
             await sender.Send(new UpdateItemCommand(
                 id, request.Name, request.Description, request.Price,
                 request.Calories, request.PrepTimeMinutes, request.IsAvailable,
-                request.DisplayOrder, request.Allergens, request.Badges));
+                request.DisplayOrder, request.Allergens, request.Badges, request.Translations));
             return Results.NoContent();
         })
         .RequireAuthorization()

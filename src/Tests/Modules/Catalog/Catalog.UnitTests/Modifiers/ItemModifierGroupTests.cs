@@ -1,4 +1,5 @@
 using Catalog.Modifiers.Models;
+using Catalog.Shared;
 
 namespace Catalog.UnitTests.Modifiers;
 
@@ -17,6 +18,7 @@ public class ItemModifierGroupTests : BaseUnitTest
         group.Name.Should().Be("Extra Toppings");
         group.IsRequired.Should().BeFalse();
         group.IsMultiSelect.Should().BeTrue();
+        group.Translations.Should().BeEmpty();
     }
 
     [Fact]
@@ -65,5 +67,24 @@ public class ItemModifierGroupTests : BaseUnitTest
         group.MinSelections.Should().Be(1);
         group.MaxSelections.Should().Be(3);
         group.IsActive.Should().BeFalse();
+    }
+
+    [Fact]
+    public void Create_WithTranslations_StoresTranslationsCorrectly()
+    {
+        var translations = new Dictionary<string, LocalizedContent>
+        {
+            ["en"] = new("Extra Toppings", null),
+            ["tr"] = new("Ekstra Malzemeler", null)
+        };
+
+        var group = ItemModifierGroup.Create(
+            Guid.CreateVersion7(), Guid.CreateVersion7(), Guid.CreateVersion7(),
+            "Extra Toppings", false, true, null, null, 1,
+            translations: translations);
+
+        group.Translations.Should().HaveCount(2);
+        group.Translations["en"].Name.Should().Be("Extra Toppings");
+        group.Translations["tr"].Name.Should().Be("Ekstra Malzemeler");
     }
 }

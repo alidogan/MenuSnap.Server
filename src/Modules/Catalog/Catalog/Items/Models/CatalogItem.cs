@@ -16,6 +16,7 @@ public class CatalogItem : Aggregate<Guid>
     public int DisplayOrder { get; private set; }
     public List<Allergen> Allergens { get; private set; } = [];
     public List<string> Badges { get; private set; } = [];
+    public Dictionary<string, LocalizedContent> Translations { get; private set; } = new();
 
     public static CatalogItem Create(
         Guid id,
@@ -29,7 +30,8 @@ public class CatalogItem : Aggregate<Guid>
         bool isAvailable,
         int displayOrder,
         List<Allergen>? allergens = null,
-        List<string>? badges = null)
+        List<string>? badges = null,
+        Dictionary<string, LocalizedContent>? translations = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
         if (categoryId == Guid.Empty) throw new ArgumentException("CategoryId cannot be empty.", nameof(categoryId));
@@ -48,7 +50,8 @@ public class CatalogItem : Aggregate<Guid>
             IsAvailable = isAvailable,
             DisplayOrder = displayOrder,
             Allergens = allergens ?? [],
-            Badges = badges ?? []
+            Badges = badges ?? [],
+            Translations = translations ?? new()
         };
 
         item.AddDomainEvent(new CatalogItemCreatedEvent(item));
@@ -64,7 +67,8 @@ public class CatalogItem : Aggregate<Guid>
         bool isAvailable,
         int displayOrder,
         List<Allergen>? allergens,
-        List<string>? badges)
+        List<string>? badges,
+        Dictionary<string, LocalizedContent>? translations = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
         if (price < 0) throw new ArgumentException("Price cannot be negative.", nameof(price));
@@ -78,6 +82,7 @@ public class CatalogItem : Aggregate<Guid>
         DisplayOrder = displayOrder;
         Allergens = allergens ?? [];
         Badges = badges ?? [];
+        Translations = translations ?? new();
     }
 
     public void SetImageUrl(string imageUrl)

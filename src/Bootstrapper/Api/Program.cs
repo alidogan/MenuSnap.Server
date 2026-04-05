@@ -1,10 +1,14 @@
+using System.Text;
 using Carter;
 using Catalog;
 using Identity;
-using Keycloak.AuthServices.Authentication;
 using Location;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.OpenApi;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 using Order;
 using Serilog;
 using ServiceUnit;
@@ -40,23 +44,25 @@ builder.Services.AddStackExchangeRedisCache(options =>
 builder.Services
     .AddMassTransitWithAssemblies(builder.Configuration, catalogAssembly, locationAssembly, orderAssembly, tenantAssembly, identityAssembly, serviceUnitAssembly);
 
-builder.Services.AddKeycloakWebApiAuthentication(builder.Configuration);
-
-var keycloakFrontendUrl = builder.Configuration["Keycloak:frontend-url"];
-if (!string.IsNullOrEmpty(keycloakFrontendUrl))
-{
-    var realm = builder.Configuration["Keycloak:realm"];
-    var frontendIssuer = $"{keycloakFrontendUrl.TrimEnd('/')}/realms/{realm}";
-    builder.Services.PostConfigureAll<JwtBearerOptions>(options =>
+builder.Services.AddAuthentication(options =>
     {
-        var existing = (options.TokenValidationParameters.ValidIssuers ?? []).ToList();
-        if (!string.IsNullOrEmpty(options.TokenValidationParameters.ValidIssuer))
-            existing.Add(options.TokenValidationParameters.ValidIssuer);
-        existing.Add(frontendIssuer);
-        options.TokenValidationParameters.ValidIssuer = null;
-        options.TokenValidationParameters.ValidIssuers = existing.Distinct();
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidateAudience = true,
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"]!)),
+            ValidateLifetime = true,
+        };
     });
-}
 
 builder.Services.AddAuthorization();
 
@@ -68,6 +74,20 @@ builder.Services
     .AddTenantModule(builder.Configuration)
     .AddIdentityModule(builder.Configuration)
     .AddServiceUnitModule(builder.Configuration);
+
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDocumentTransformer((document, _, _) =>
+    {
+        document.Info = new OpenApiInfo
+        {
+            Title = "MenuSnap API",
+            Version = "v1",
+        };
+        return Task.CompletedTask;
+    });
+    options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
+});
 
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 builder.Services.AddProblemDetails();
@@ -81,6 +101,13 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+app.MapOpenApi();
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("/openapi/v1.json", "MenuSnap API");
+    options.RoutePrefix = "swagger";
+});
 
 app.MapCarter();
 app.UseSerilogRequestLogging();
@@ -100,3 +127,24 @@ app
 app.Run();
 
 public partial class Program { }
+
+internal sealed class BearerSecuritySchemeTransformer(
+    IAuthenticationSchemeProvider schemeProvider) : IOpenApiDocumentTransformer
+{
+    public async Task TransformAsync(
+        OpenApiDocument document, OpenApiDocumentTransformerContext context, CancellationToken cancellationToken)
+    {
+        var schemes = await schemeProvider.GetAllSchemesAsync();
+        if (!schemes.Any(s => s.Name == JwtBearerDefaults.AuthenticationScheme)) return;
+
+        document.Components ??= new OpenApiComponents();
+        document.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>();
+        document.Components.SecuritySchemes["Bearer"] = new OpenApiSecurityScheme
+        {
+            Type = SecuritySchemeType.Http,
+            Scheme = "bearer",
+            BearerFormat = "JWT",
+            In = ParameterLocation.Header,
+        };
+    }
+}

@@ -8,7 +8,8 @@ public record AddModifierCommand(
     decimal PriceDelta,
     bool IsDefault,
     bool IsAvailable,
-    int DisplayOrder)
+    int DisplayOrder,
+    Dictionary<string, LocalizedContent>? Translations = null)
     : ICommand<AddModifierResult>;
 
 public record AddModifierResult(Guid Id);
@@ -41,7 +42,8 @@ internal class AddModifierHandler(CatalogDbContext dbContext)
             command.PriceDelta,
             command.IsDefault,
             command.IsAvailable,
-            command.DisplayOrder);
+            command.DisplayOrder,
+            command.Translations);
 
         dbContext.ItemModifiers.Add(modifier);
         await dbContext.SaveChangesAsync(cancellationToken);

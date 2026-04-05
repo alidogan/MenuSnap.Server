@@ -22,23 +22,6 @@ services:
       - "5672:5672"
       - "15672:15672"
 
-  identity:
-    image: quay.io/keycloak/keycloak:26.1
-    environment:
-      - KC_DB=postgres
-      - KC_DB_URL=jdbc:postgresql://menudb:5432/MenuSnapDb
-      - KC_DB_SCHEMA=identity
-      - KC_DB_USERNAME=postgres
-      - KC_DB_PASSWORD=postgres
-      - KEYCLOAK_ADMIN=admin
-      - KEYCLOAK_ADMIN_PASSWORD=admin
-    command: start-dev
-    depends_on:
-      - menudb
-    restart: unless-stopped
-    ports:
-      - "9090:8080"
-
   seq:
     image: datalust/seq:latest
     environment:
@@ -75,7 +58,6 @@ services:
       - menudb
       - distributedcache
       - messagebus
-      - identity
       - minio
     restart: unless-stopped
     ports:

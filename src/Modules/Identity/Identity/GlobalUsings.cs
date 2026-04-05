@@ -13,3 +13,5 @@ global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Routing;
 global using FluentValidation;
 global using Identity.Data;
+global using Identity.Users.Models;
+global using Identity.Contracts.TenantMembers.Dtos;

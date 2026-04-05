@@ -14,7 +14,8 @@ public static class CreateGroupMapper
             command.Description,
             Enum.Parse<CatalogGroupType>(command.Type, ignoreCase: true),
             command.DisplayOrder,
-            command.IsActive);
+            command.IsActive,
+            command.Translations);
 
     public static CreateGroupResult ToResult(CatalogGroup group) => new(group.Id);
 

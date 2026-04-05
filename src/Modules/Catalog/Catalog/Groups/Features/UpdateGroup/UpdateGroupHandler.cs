@@ -9,7 +9,8 @@ public record UpdateGroupCommand(
     string? Description,
     string Type,
     int DisplayOrder,
-    bool IsActive)
+    bool IsActive,
+    Dictionary<string, LocalizedContent>? Translations = null)
     : ICommand<UpdateGroupResult>;
 
 public record UpdateGroupResult(bool IsSuccess);
@@ -43,7 +44,8 @@ internal class UpdateGroupHandler(CatalogDbContext dbContext)
             command.Description,
             Enum.Parse<CatalogGroupType>(command.Type, ignoreCase: true),
             command.DisplayOrder,
-            command.IsActive);
+            command.IsActive,
+            command.Translations);
 
         await dbContext.SaveChangesAsync(cancellationToken);
         return new UpdateGroupResult(true);

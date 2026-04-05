@@ -2,7 +2,8 @@ using Catalog.Categories.Exceptions;
 
 namespace Catalog.Categories.Features.UpdateCategory;
 
-public record UpdateCategoryCommand(Guid Id, string Name, string? Description, int DisplayOrder, bool IsActive)
+public record UpdateCategoryCommand(Guid Id, string Name, string? Description, int DisplayOrder, bool IsActive,
+    Dictionary<string, LocalizedContent>? Translations = null)
     : ICommand<UpdateCategoryResult>;
 
 public record UpdateCategoryResult(bool IsSuccess);
@@ -28,7 +29,7 @@ internal class UpdateCategoryHandler(CatalogDbContext dbContext)
         if (category is null)
             throw new CatalogCategoryNotFoundException(command.Id);
 
-        category.Update(command.Name, command.Description, command.DisplayOrder, command.IsActive);
+        category.Update(command.Name, command.Description, command.DisplayOrder, command.IsActive, command.Translations);
         await dbContext.SaveChangesAsync(cancellationToken);
         return new UpdateCategoryResult(true);
     }

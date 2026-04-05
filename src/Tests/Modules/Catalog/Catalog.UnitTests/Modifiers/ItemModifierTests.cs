@@ -1,4 +1,5 @@
 using Catalog.Modifiers.Models;
+using Catalog.Shared;
 
 namespace Catalog.UnitTests.Modifiers;
 
@@ -18,6 +19,7 @@ public class ItemModifierTests : BaseUnitTest
         modifier.PriceDelta.Should().Be(2.50m);
         modifier.IsDefault.Should().BeFalse();
         modifier.IsAvailable.Should().BeTrue();
+        modifier.Translations.Should().BeEmpty();
     }
 
     [Fact]
@@ -61,5 +63,23 @@ public class ItemModifierTests : BaseUnitTest
         modifier.PriceDelta.Should().Be(3m);
         modifier.IsDefault.Should().BeTrue();
         modifier.IsAvailable.Should().BeFalse();
+    }
+
+    [Fact]
+    public void Create_WithTranslations_StoresTranslationsCorrectly()
+    {
+        var translations = new Dictionary<string, LocalizedContent>
+        {
+            ["en"] = new("Extra Chicken", null),
+            ["tr"] = new("Ekstra Tavuk", null)
+        };
+
+        var modifier = ItemModifier.Create(
+            Guid.CreateVersion7(), Guid.CreateVersion7(),
+            "Extra Kip", 2.50m, false, true, 1, translations);
+
+        modifier.Translations.Should().HaveCount(2);
+        modifier.Translations["en"].Name.Should().Be("Extra Chicken");
+        modifier.Translations["tr"].Name.Should().Be("Ekstra Tavuk");
     }
 }

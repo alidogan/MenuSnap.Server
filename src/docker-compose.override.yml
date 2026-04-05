@@ -19,16 +19,6 @@ services:
       - MINIO_ROOT_USER=minioadmin
       - MINIO_ROOT_PASSWORD=minioadmin
 
-  identity:
-    environment:
-      - KC_DB=postgres
-      - KC_DB_URL=jdbc:postgresql://menudb:5432/MenuSnapDb
-      - KC_DB_SCHEMA=identity
-      - KC_DB_USERNAME=postgres
-      - KC_DB_PASSWORD=postgres
-      - KEYCLOAK_ADMIN=admin
-      - KEYCLOAK_ADMIN_PASSWORD=admin
-
   api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -38,8 +28,6 @@ services:
       - MessageBroker__Host=amqp://messagebus:5672
       - MessageBroker__UserName=guest
       - MessageBroker__Password=guest
-      - Keycloak__auth-server-url=http://identity:8080
-      - Keycloak__frontend-url=http://localhost:9090
       - Storage__Endpoint=minio:9000
       - Storage__PublicEndpoint=localhost:9000
       - Serilog__WriteTo__1__Name=Seq

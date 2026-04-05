@@ -1,4 +1,5 @@
 using Catalog.Groups.Models;
+using Catalog.Shared;
 
 namespace Catalog.UnitTests.Groups;
 
@@ -21,6 +22,7 @@ public class CatalogGroupTests : BaseUnitTest
         group.Type.Should().Be(CatalogGroupType.Food);
         group.DisplayOrder.Should().Be(1);
         group.IsActive.Should().BeTrue();
+        group.Translations.Should().BeEmpty();
     }
 
     [Fact]
@@ -57,5 +59,58 @@ public class CatalogGroupTests : BaseUnitTest
         group.Type.Should().Be(CatalogGroupType.Beverage);
         group.DisplayOrder.Should().Be(2);
         group.IsActive.Should().BeFalse();
+    }
+
+    [Fact]
+    public void Create_WithTranslations_StoresTranslationsCorrectly()
+    {
+        var translations = new Dictionary<string, LocalizedContent>
+        {
+            ["en"] = new("Breakfast", "Morning meals"),
+            ["tr"] = new("Kahvaltı", "Sabah yemekleri")
+        };
+
+        var group = CatalogGroup.Create(
+            Guid.CreateVersion7(), Guid.CreateVersion7(), Guid.CreateVersion7(),
+            "Ontbijt", "Ochtend maaltijden", CatalogGroupType.Food, 1,
+            translations: translations);
+
+        group.Translations.Should().HaveCount(2);
+        group.Translations["en"].Name.Should().Be("Breakfast");
+        group.Translations["tr"].Description.Should().Be("Sabah yemekleri");
+    }
+
+    [Fact]
+    public void Update_WithTranslations_ReplacesTranslations()
+    {
+        var group = CatalogGroup.Create(
+            Guid.CreateVersion7(), Guid.CreateVersion7(), Guid.CreateVersion7(),
+            "Old", null, CatalogGroupType.Food, 1,
+            translations: new Dictionary<string, LocalizedContent>
+            {
+                ["en"] = new("Old English", null)
+            });
+
+        var newTranslations = new Dictionary<string, LocalizedContent>
+        {
+            ["en"] = new("Drinks", "All beverages"),
+            ["tr"] = new("İçecekler", "Tüm içecekler")
+        };
+
+        group.Update("Dranken", "Alle dranken", CatalogGroupType.Beverage, 2, true, newTranslations);
+
+        group.Translations.Should().HaveCount(2);
+        group.Translations["en"].Name.Should().Be("Drinks");
+    }
+
+    [Fact]
+    public void Create_WithNullTranslations_DefaultsToEmptyDictionary()
+    {
+        var group = CatalogGroup.Create(
+            Guid.CreateVersion7(), Guid.CreateVersion7(), Guid.CreateVersion7(),
+            "Name", null, CatalogGroupType.Food, 1);
+
+        group.Translations.Should().NotBeNull();
+        group.Translations.Should().BeEmpty();
     }
 }

@@ -1,6 +1,7 @@
 namespace Catalog.Categories.Features.UpdateCategory;
 
-public record UpdateCategoryRequest(string Name, string? Description, int DisplayOrder, bool IsActive);
+public record UpdateCategoryRequest(string Name, string? Description, int DisplayOrder, bool IsActive,
+    Dictionary<string, LocalizedContent>? Translations = null);
 
 public class UpdateCategoryEndpoint : ICarterModule
 {
@@ -8,7 +9,8 @@ public class UpdateCategoryEndpoint : ICarterModule
     {
         app.MapPut("/catalog/categories/{id:guid}", async (Guid id, UpdateCategoryRequest request, ISender sender) =>
         {
-            await sender.Send(new UpdateCategoryCommand(id, request.Name, request.Description, request.DisplayOrder, request.IsActive));
+            await sender.Send(new UpdateCategoryCommand(id, request.Name, request.Description, request.DisplayOrder, request.IsActive,
+                request.Translations));
             return Results.NoContent();
         })
         .RequireAuthorization()

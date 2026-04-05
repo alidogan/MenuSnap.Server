@@ -1,6 +1,7 @@
 using Catalog.Groups.Features.CreateGroup;
 using Catalog.Categories.Features.CreateCategory;
 using Catalog.Items.Features.CreateItem;
+using Catalog.Shared;
 
 namespace Catalog.IntegrationTests.Items;
 
@@ -64,5 +65,25 @@ public class CreateItemEndpointTests(MenuSnapWebAppFactory factory)
         var response = await Client.PostAsJsonAsync("/catalog/items", request);
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public async Task CreateItem_WithTranslations_ReturnsCreated201()
+    {
+        var categoryId = await CreateCategoryAsync();
+        var translations = new Dictionary<string, LocalizedContent>
+        {
+            ["en"] = new("Scrambled Eggs", "Fluffy eggs"),
+            ["tr"] = new("Çırpılmış Yumurta", "Kabarık yumurta")
+        };
+
+        var request = new CreateItemRequest(
+            Guid.CreateVersion7(), categoryId,
+            "Roerei", "Luchtige eieren", 8.50m,
+            320, 10, true, 1, ["Eggs"], ["Healthy"], translations);
+
+        var response = await Client.PostAsJsonAsync("/catalog/items", request);
+
+        response.StatusCode.Should().Be(HttpStatusCode.Created);
     }
 }

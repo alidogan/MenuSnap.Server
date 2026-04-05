@@ -13,4 +13,5 @@ global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Routing;
 global using FluentValidation;
 global using Catalog.Data;
+global using Catalog.Shared;
 global using Catalog.Contracts.Items.Dtos;

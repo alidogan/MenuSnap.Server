@@ -6,7 +6,8 @@ public record CreateCategoryCommand(
     string Name,
     string? Description,
     int DisplayOrder,
-    bool IsActive = true)
+    bool IsActive = true,
+    Dictionary<string, LocalizedContent>? Translations = null)
     : ICommand<CreateCategoryResult>;
 
 public record CreateCategoryResult(Guid Id);

@@ -13,7 +13,8 @@ public record UpdateItemCommand(
     bool IsAvailable,
     int DisplayOrder,
     List<string>? Allergens,
-    List<string>? Badges)
+    List<string>? Badges,
+    Dictionary<string, LocalizedContent>? Translations = null)
     : ICommand<UpdateItemResult>;
 
 public record UpdateItemResult(bool IsSuccess);
@@ -47,7 +48,7 @@ internal class UpdateItemHandler(CatalogDbContext dbContext)
         item.Update(
             command.Name, command.Description, command.Price, command.Calories,
             command.PrepTimeMinutes, command.IsAvailable, command.DisplayOrder,
-            allergens, command.Badges);
+            allergens, command.Badges, command.Translations);
 
         await dbContext.SaveChangesAsync(cancellationToken);
         return new UpdateItemResult(true);

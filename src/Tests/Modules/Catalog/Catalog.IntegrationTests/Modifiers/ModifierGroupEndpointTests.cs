@@ -2,6 +2,7 @@ using Catalog.Groups.Features.CreateGroup;
 using Catalog.Categories.Features.CreateCategory;
 using Catalog.Items.Features.CreateItem;
 using Catalog.Modifiers.Features.CreateModifierGroup;
+using Catalog.Shared;
 
 namespace Catalog.IntegrationTests.Modifiers;
 
@@ -62,5 +63,25 @@ public class ModifierGroupEndpointTests(MenuSnapWebAppFactory factory)
         var response = await Client.DeleteAsync($"/catalog/modifier-groups/{Guid.CreateVersion7()}");
 
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task CreateModifierGroup_WithTranslations_ReturnsCreated201()
+    {
+        var itemId = await CreateItemAsync();
+        var translations = new Dictionary<string, LocalizedContent>
+        {
+            ["en"] = new("Extra Toppings", null),
+            ["tr"] = new("Ekstra Malzemeler", null)
+        };
+
+        var request = new CreateModifierGroupRequest(
+            Guid.CreateVersion7(), itemId,
+            "Extra Toppings", false, true, null, null, 1,
+            Translations: translations);
+
+        var response = await Client.PostAsJsonAsync("/catalog/modifier-groups", request);
+
+        response.StatusCode.Should().Be(HttpStatusCode.Created);
     }
 }

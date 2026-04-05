@@ -1,3 +1,4 @@
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authentication;
@@ -18,9 +19,11 @@ public class TestAuthHandler(
     {
         var claims = new[]
         {
+            new Claim(JwtRegisteredClaimNames.Sub, "00000000-0000-0000-0000-000000000001"),
+            new Claim(JwtRegisteredClaimNames.Email, "test@menusnap.test"),
+            new Claim(JwtRegisteredClaimNames.GivenName, "Test User"),
             new Claim(ClaimTypes.Name, "TestUser"),
             new Claim(ClaimTypes.NameIdentifier, "00000000-0000-0000-0000-000000000001"),
-            new Claim(ClaimTypes.Email, "test@menusnap.test"),
         };
 
         var identity = new ClaimsIdentity(claims, SchemeName);

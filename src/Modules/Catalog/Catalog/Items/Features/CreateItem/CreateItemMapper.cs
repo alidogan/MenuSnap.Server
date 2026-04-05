@@ -22,7 +22,8 @@ public static class CreateItemMapper
             command.IsAvailable,
             command.DisplayOrder,
             allergens,
-            command.Badges);
+            command.Badges,
+            command.Translations);
     }
 
     public static CreateItemResult ToResult(CatalogItem item) => new(item.Id);

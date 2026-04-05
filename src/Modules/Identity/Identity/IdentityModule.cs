@@ -1,10 +1,12 @@
+using Identity.Auth.Services;
+using Identity.Users.Models;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Data;
 using Shared.Data.Interceptors;
-using Shared.Data.Seed;
 
 namespace Identity;
 
@@ -24,6 +26,21 @@ public static class IdentityModule
             options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
             options.UseNpgsql(connectionString);
         });
+
+        services.AddIdentityCore<ApplicationUser>(options =>
+            {
+                options.Password.RequiredLength = 8;
+                options.Password.RequireDigit = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.User.RequireUniqueEmail = true;
+            })
+            .AddRoles<IdentityRole<Guid>>()
+            .AddEntityFrameworkStores<IdentityDbContext>()
+            .AddDefaultTokenProviders();
+
+        services.AddScoped<TokenService>();
+        services.AddScoped<IDataSeeder, Identity.Data.Seed.IdentityDataSeeder>();
 
         return services;
     }

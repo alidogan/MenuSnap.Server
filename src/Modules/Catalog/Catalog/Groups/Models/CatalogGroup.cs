@@ -11,6 +11,7 @@ public class CatalogGroup : Aggregate<Guid>
     public CatalogGroupType Type { get; private set; }
     public int DisplayOrder { get; private set; }
     public bool IsActive { get; private set; }
+    public Dictionary<string, LocalizedContent> Translations { get; private set; } = new();
 
     public static CatalogGroup Create(
         Guid id,
@@ -20,7 +21,8 @@ public class CatalogGroup : Aggregate<Guid>
         string? description,
         CatalogGroupType type,
         int displayOrder,
-        bool isActive = true)
+        bool isActive = true,
+        Dictionary<string, LocalizedContent>? translations = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
         if (tenantId == Guid.Empty) throw new ArgumentException("TenantId cannot be empty.", nameof(tenantId));
@@ -35,7 +37,8 @@ public class CatalogGroup : Aggregate<Guid>
             Description = description,
             Type = type,
             DisplayOrder = displayOrder,
-            IsActive = isActive
+            IsActive = isActive,
+            Translations = translations ?? new()
         };
 
         group.AddDomainEvent(new CatalogGroupCreatedEvent(group));
@@ -47,7 +50,8 @@ public class CatalogGroup : Aggregate<Guid>
         string? description,
         CatalogGroupType type,
         int displayOrder,
-        bool isActive)
+        bool isActive,
+        Dictionary<string, LocalizedContent>? translations = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
         Name = name;
@@ -55,5 +59,6 @@ public class CatalogGroup : Aggregate<Guid>
         Type = type;
         DisplayOrder = displayOrder;
         IsActive = isActive;
+        Translations = translations ?? new();
     }
 }

@@ -9,7 +9,8 @@ public record CreateGroupCommand(
     string? Description,
     string Type,
     int DisplayOrder,
-    bool IsActive = true)
+    bool IsActive = true,
+    Dictionary<string, LocalizedContent>? Translations = null)
     : ICommand<CreateGroupResult>;
 
 public record CreateGroupResult(Guid Id);

@@ -4,7 +4,8 @@ public record CreateModifierGroupRequest(
     Guid TenantId, Guid ItemId, string Name,
     bool IsRequired, bool IsMultiSelect,
     int? MinSelections, int? MaxSelections,
-    int DisplayOrder, bool IsActive = true);
+    int DisplayOrder, bool IsActive = true,
+    Dictionary<string, LocalizedContent>? Translations = null);
 
 public record CreateModifierGroupResponse(Guid Id);
 
@@ -18,7 +19,8 @@ public class CreateModifierGroupEndpoint : ICarterModule
                 request.TenantId, request.ItemId, request.Name,
                 request.IsRequired, request.IsMultiSelect,
                 request.MinSelections, request.MaxSelections,
-                request.DisplayOrder, request.IsActive);
+                request.DisplayOrder, request.IsActive,
+                request.Translations);
 
             var result = await sender.Send(command);
             return Results.Created($"/catalog/modifier-groups/{result.Id}", new CreateModifierGroupResponse(result.Id));

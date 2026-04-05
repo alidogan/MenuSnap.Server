@@ -1,6 +1,7 @@
 namespace Catalog.Modifiers.Features.AddModifier;
 
-public record AddModifierRequest(string Name, decimal PriceDelta, bool IsDefault, bool IsAvailable, int DisplayOrder);
+public record AddModifierRequest(string Name, decimal PriceDelta, bool IsDefault, bool IsAvailable, int DisplayOrder,
+    Dictionary<string, LocalizedContent>? Translations = null);
 public record AddModifierResponse(Guid Id);
 
 public class AddModifierEndpoint : ICarterModule
@@ -12,7 +13,8 @@ public class AddModifierEndpoint : ICarterModule
             {
                 var command = new AddModifierCommand(
                     groupId, request.Name, request.PriceDelta,
-                    request.IsDefault, request.IsAvailable, request.DisplayOrder);
+                    request.IsDefault, request.IsAvailable, request.DisplayOrder,
+                    request.Translations);
 
                 var result = await sender.Send(command);
                 return Results.Created(

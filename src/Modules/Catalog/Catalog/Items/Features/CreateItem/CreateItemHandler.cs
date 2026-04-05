@@ -13,7 +13,8 @@ public record CreateItemCommand(
     bool IsAvailable,
     int DisplayOrder,
     List<string>? Allergens,
-    List<string>? Badges)
+    List<string>? Badges,
+    Dictionary<string, LocalizedContent>? Translations = null)
     : ICommand<CreateItemResult>;
 
 public record CreateItemResult(Guid Id);

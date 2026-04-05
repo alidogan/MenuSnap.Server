@@ -11,7 +11,8 @@ public record CreateItemRequest(
     bool IsAvailable,
     int DisplayOrder,
     List<string>? Allergens,
-    List<string>? Badges);
+    List<string>? Badges,
+    Dictionary<string, LocalizedContent>? Translations = null);
 
 public record CreateItemResponse(Guid Id);
 
@@ -25,7 +26,7 @@ public class CreateItemEndpoint : ICarterModule
                 request.TenantId, request.CategoryId, request.Name,
                 request.Description, request.Price, request.Calories,
                 request.PrepTimeMinutes, request.IsAvailable, request.DisplayOrder,
-                request.Allergens, request.Badges);
+                request.Allergens, request.Badges, request.Translations);
 
             var result = await sender.Send(command);
             return Results.Created($"/catalog/items/{result.Id}", new CreateItemResponse(result.Id));

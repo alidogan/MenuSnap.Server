@@ -9,7 +9,8 @@ public record CreateModifierGroupCommand(
     int? MinSelections,
     int? MaxSelections,
     int DisplayOrder,
-    bool IsActive = true)
+    bool IsActive = true,
+    Dictionary<string, LocalizedContent>? Translations = null)
     : ICommand<CreateModifierGroupResult>;
 
 public record CreateModifierGroupResult(Guid Id);
@@ -46,7 +47,8 @@ internal class CreateModifierGroupHandler(CatalogDbContext dbContext)
             command.MinSelections,
             command.MaxSelections,
             command.DisplayOrder,
-            command.IsActive);
+            command.IsActive,
+            command.Translations);
 
         dbContext.ItemModifierGroups.Add(group);
         await dbContext.SaveChangesAsync(cancellationToken);

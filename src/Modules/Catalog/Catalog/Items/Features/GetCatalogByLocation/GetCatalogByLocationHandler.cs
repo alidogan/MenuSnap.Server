@@ -16,6 +16,7 @@ public record CatalogGroupView(
     string? Description,
     string Type,
     int DisplayOrder,
+    Dictionary<string, LocalizedContent> Translations,
     IReadOnlyList<CatalogCategoryView> Categories);
 
 public record CatalogCategoryView(
@@ -23,6 +24,7 @@ public record CatalogCategoryView(
     string Name,
     string? Description,
     int DisplayOrder,
+    Dictionary<string, LocalizedContent> Translations,
     IReadOnlyList<CatalogItemView> Items);
 
 public record CatalogItemView(
@@ -36,6 +38,7 @@ public record CatalogItemView(
     int DisplayOrder,
     IReadOnlyList<string> Allergens,
     IReadOnlyList<string> Badges,
+    Dictionary<string, LocalizedContent> Translations,
     IReadOnlyList<ItemModifierGroupDto> ModifierGroups);
 
 internal class GetCatalogByLocationHandler(CatalogDbContext dbContext)
@@ -87,7 +90,7 @@ internal class GetCatalogByLocationHandler(CatalogDbContext dbContext)
             .ToDictionary(
                 g => g.Key,
                 g => (IReadOnlyList<ItemModifierDto>)g.Select(m =>
-                    new ItemModifierDto(m.Id, m.Name, m.PriceDelta, m.IsDefault, m.IsAvailable, m.DisplayOrder))
+                    new ItemModifierDto(m.Id, m.Name, m.PriceDelta, m.IsDefault, m.IsAvailable, m.DisplayOrder, m.Translations))
                     .ToList());
 
         var modifierGroupsByItem = modifierGroups
@@ -98,6 +101,7 @@ internal class GetCatalogByLocationHandler(CatalogDbContext dbContext)
                     new ItemModifierGroupDto(
                         mg.Id, mg.ItemId, mg.Name, mg.IsRequired, mg.IsMultiSelect,
                         mg.MinSelections, mg.MaxSelections, mg.DisplayOrder, mg.IsActive,
+                        mg.Translations,
                         modifiersByGroup.GetValueOrDefault(mg.Id, [])))
                     .ToList());
 
@@ -111,6 +115,7 @@ internal class GetCatalogByLocationHandler(CatalogDbContext dbContext)
                         i.Calories, i.PrepTimeMinutes, i.DisplayOrder,
                         i.Allergens.Select(a => a.ToString()).ToList(),
                         i.Badges,
+                        i.Translations,
                         modifierGroupsByItem.GetValueOrDefault(i.Id, [])))
                     .ToList());
 
@@ -121,12 +126,14 @@ internal class GetCatalogByLocationHandler(CatalogDbContext dbContext)
                 g => (IReadOnlyList<CatalogCategoryView>)g.Select(c =>
                     new CatalogCategoryView(
                         c.Id, c.Name, c.Description, c.DisplayOrder,
+                        c.Translations,
                         itemsByCategory.GetValueOrDefault(c.Id, [])))
                     .ToList());
 
         var groupViews = groups.Select(g =>
             new CatalogGroupView(
                 g.Id, g.Name, g.Description, g.Type.ToString(), g.DisplayOrder,
+                g.Translations,
                 categoriesByGroup.GetValueOrDefault(g.Id, [])))
             .ToList();
 

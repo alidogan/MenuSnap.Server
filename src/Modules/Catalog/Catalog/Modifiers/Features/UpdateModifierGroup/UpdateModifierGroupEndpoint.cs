@@ -2,7 +2,8 @@ namespace Catalog.Modifiers.Features.UpdateModifierGroup;
 
 public record UpdateModifierGroupRequest(
     string Name, bool IsRequired, bool IsMultiSelect,
-    int? MinSelections, int? MaxSelections, int DisplayOrder, bool IsActive);
+    int? MinSelections, int? MaxSelections, int DisplayOrder, bool IsActive,
+    Dictionary<string, LocalizedContent>? Translations = null);
 
 public class UpdateModifierGroupEndpoint : ICarterModule
 {
@@ -12,7 +13,8 @@ public class UpdateModifierGroupEndpoint : ICarterModule
         {
             await sender.Send(new UpdateModifierGroupCommand(
                 id, request.Name, request.IsRequired, request.IsMultiSelect,
-                request.MinSelections, request.MaxSelections, request.DisplayOrder, request.IsActive));
+                request.MinSelections, request.MaxSelections, request.DisplayOrder, request.IsActive,
+                request.Translations));
             return Results.NoContent();
         })
         .RequireAuthorization()

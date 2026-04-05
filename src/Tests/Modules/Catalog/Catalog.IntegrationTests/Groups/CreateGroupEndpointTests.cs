@@ -1,4 +1,5 @@
 using Catalog.Groups.Features.CreateGroup;
+using Catalog.Shared;
 
 namespace Catalog.IntegrationTests.Groups;
 
@@ -39,5 +40,26 @@ public class CreateGroupEndpointTests(MenuSnapWebAppFactory factory)
         var response = await Client.PostAsJsonAsync("/catalog/groups", request);
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public async Task CreateGroup_WithTranslations_ReturnsCreated201()
+    {
+        var translations = new Dictionary<string, LocalizedContent>
+        {
+            ["en"] = new("Breakfast", "Morning meals"),
+            ["tr"] = new("Kahvaltı", "Sabah yemekleri")
+        };
+
+        var request = new CreateGroupRequest(
+            Guid.CreateVersion7(), Guid.CreateVersion7(),
+            "Ontbijt", "Ochtend maaltijden", "Food", 1,
+            Translations: translations);
+
+        var response = await Client.PostAsJsonAsync("/catalog/groups", request);
+
+        response.StatusCode.Should().Be(HttpStatusCode.Created);
+        var result = await response.Content.ReadFromJsonAsync<CreateGroupResponse>();
+        result!.Id.Should().NotBeEmpty();
     }
 }

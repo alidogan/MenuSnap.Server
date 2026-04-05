@@ -11,6 +11,7 @@ public class ItemModifierGroup : Aggregate<Guid>
     public int? MaxSelections { get; private set; }
     public int DisplayOrder { get; private set; }
     public bool IsActive { get; private set; }
+    public Dictionary<string, LocalizedContent> Translations { get; private set; } = new();
 
     public static ItemModifierGroup Create(
         Guid id,
@@ -22,7 +23,8 @@ public class ItemModifierGroup : Aggregate<Guid>
         int? minSelections,
         int? maxSelections,
         int displayOrder,
-        bool isActive = true)
+        bool isActive = true,
+        Dictionary<string, LocalizedContent>? translations = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
         if (itemId == Guid.Empty) throw new ArgumentException("ItemId cannot be empty.", nameof(itemId));
@@ -47,7 +49,8 @@ public class ItemModifierGroup : Aggregate<Guid>
             MinSelections = minSelections,
             MaxSelections = maxSelections,
             DisplayOrder = displayOrder,
-            IsActive = isActive
+            IsActive = isActive,
+            Translations = translations ?? new()
         };
     }
 
@@ -58,7 +61,8 @@ public class ItemModifierGroup : Aggregate<Guid>
         int? minSelections,
         int? maxSelections,
         int displayOrder,
-        bool isActive)
+        bool isActive,
+        Dictionary<string, LocalizedContent>? translations = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
 
@@ -75,5 +79,6 @@ public class ItemModifierGroup : Aggregate<Guid>
         MaxSelections = maxSelections;
         DisplayOrder = displayOrder;
         IsActive = isActive;
+        Translations = translations ?? new();
     }
 }
